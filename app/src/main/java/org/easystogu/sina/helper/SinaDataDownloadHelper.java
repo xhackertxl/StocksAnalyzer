@@ -1,5 +1,13 @@
 package org.easystogu.sina.helper;
 
+import android.util.Log;
+
+import com.alex.develop.entity.Remote;
+
+import org.easystogu.config.FileConfigurationService;
+import org.easystogu.config.StockListConfigurationService;
+import org.easystogu.sina.common.RealTimePriceVO;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,14 +16,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.easystogu.config.FileConfigurationService;
-import org.easystogu.config.StockListConfigurationService;
-import org.easystogu.sina.common.RealTimePriceVO;
-
-import com.alex.develop.entity.Remote;
-
-import android.util.Log;
 
 public class SinaDataDownloadHelper {
 	private static final String baseUrl = "http://hq.sinajs.cn/list=";
@@ -38,10 +38,7 @@ public class SinaDataDownloadHelper {
 			for (String stockId : stockIds) {
 				urlStr.append(stockId + ",");
 			}
-
-
 			HttpURLConnection urlConnection = null;
-
 			URL url = new URL(urlStr.toString());
 			urlConnection = (HttpURLConnection) url.openConnection();
 			InputStream inputStream = urlConnection.getInputStream();

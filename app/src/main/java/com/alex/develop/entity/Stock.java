@@ -36,6 +36,12 @@ public final class Stock extends BaseObject {
             public static final String COLLECT = "collect";// 股票是否被收藏
             public static final String COLLECT_STAMP = "collect_stamp";// 股票被收藏的时间戳
             public static final String SEARCH = "search";// 股票被搜索的次数
+
+            public static final String MAIN_COST_ONE = "main_cost_one";// 主力最近一日成本
+            public static final String MAIN_COST_TWENTY = "main_cost_twenty";// 主力最近一日成本
+
+            public static final String MAIN_FUND_MAIN = "main_fund_main";           // 主力流入
+            public static final String MAIN_FUND_BIG_ORDER = "main_fund_big_order";// 主力大单
         }
 
         public static final String NAME = "stock_list";
@@ -57,7 +63,15 @@ public final class Stock extends BaseObject {
 
                         Column.COLLECT + " INTEGER DEFAULT (0)," +
                         Column.COLLECT_STAMP + " INTEGER DEFAULT (0)," +
-                        Column.SEARCH + " INTEGER DEFAULT (0))";
+                        Column.SEARCH + " INTEGER DEFAULT (0)"
+
+                        + Column.MAIN_COST_ONE + " NUMERIC (24, 4) DEFAULT (0)  "
+                        + Column.MAIN_COST_TWENTY + " NUMERIC (24, 4) DEFAULT (0)  "
+                        + Column.MAIN_FUND_MAIN + " NUMERIC (24, 4) DEFAULT (0)  "
+                        + Column.MAIN_FUND_BIG_ORDER + " NUMERIC (24, 4) DEFAULT (0)  "
+
+                        +
+                        ")";
     }
 
     public Stock(String code, String name) {
@@ -188,7 +202,6 @@ public final class Stock extends BaseObject {
 
     public void collect(int collect) {
         this.collect = collect;
-
         // 更新数据库
         new CollectStockTask(collect).execute(this);
     }
@@ -247,7 +260,7 @@ public final class Stock extends BaseObject {
      * @param day
      */
     public void moveCursor(int day) {
-        if(0 < day) {
+        if (0 < day) {
 
             final Cursor.Move type = ed.move(day);
 
@@ -258,7 +271,7 @@ public final class Stock extends BaseObject {
                 st.copy(tp);
             }
 
-            if(Cursor.Move.ArriveNewest == type) {
+            if (Cursor.Move.ArriveNewest == type) {
                 Toast.makeText(Analyzer.getContext(), "已达到最新数据", Toast.LENGTH_SHORT).show();
             }
 
@@ -273,7 +286,7 @@ public final class Stock extends BaseObject {
                 ed.copy(tp);
             }
 
-            if(Cursor.Move.ArriveOldest == type) {
+            if (Cursor.Move.ArriveOldest == type) {
                 Toast.makeText(Analyzer.getContext(), "需要下载数据", Toast.LENGTH_SHORT).show();
             }
         }
@@ -317,6 +330,8 @@ public final class Stock extends BaseObject {
         today.setLow(Float.valueOf(data[5]));// 今日最低价
         today.setVolume(Long.valueOf(data[8]));// 成交量(单位：股)
         today.setAmount(Float.valueOf(data[9]));// 成交额(单位：元)
+
+
         today.initialize();
 
         for (int i = 10, j = 11, m = 20, n = 21, k = 0; k < ApiStore.SINA_ENTRUST_LEVEL; i += 2, j += 2, m += 2, n += 2, ++k) {
@@ -409,6 +424,45 @@ public final class Stock extends BaseObject {
     private int search;// 股票被搜索的次数
     private int index;// 在{Analyzer.stockList}中的索引
     private String listDate;// 股票上市日期
+
+    private float main_cost_one;// 主力最近一日成本
+    private float main_cost_twenty;// 主力最近一日成本
+    private float main_fund_main;     // 主力流入
+    private float main_fund_big_order;// 主力大单
+
+
+    public float getMain_cost_one() {
+        return main_cost_one;
+    }
+
+    public void setMain_cost_one(float main_cost_one) {
+        this.main_cost_one = main_cost_one;
+    }
+
+    public float getMain_cost_twenty() {
+        return main_cost_twenty;
+    }
+
+    public void setMain_cost_twenty(float main_cost_twenty) {
+        this.main_cost_twenty = main_cost_twenty;
+    }
+
+    public float getMain_fund_main() {
+        return main_fund_main;
+    }
+
+    public void setMain_fund_main(float main_fund_main) {
+        this.main_fund_main = main_fund_main;
+    }
+
+    public float getMain_fund_big_order() {
+        return main_fund_big_order;
+    }
+
+    public void setMain_fund_big_order(float main_fund_big_order) {
+        this.main_fund_big_order = main_fund_big_order;
+    }
+
 
     private boolean allDataIsDownload;// 该股票的历史数据已经被全部下载
 

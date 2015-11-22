@@ -28,13 +28,11 @@ public class NetworkHelper {
         try {
             URL url = new URL(webUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
-
             if(null != header) {
                 for(String key : header.keySet()) {
                     urlConnection.setRequestProperty(key, header.get(key));
                 }
             }
-
             urlConnection.connect();
             InputStream inputStream = urlConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, charset));
@@ -43,7 +41,6 @@ public class NetworkHelper {
             while (null != (line=bufferedReader.readLine())) {
                 builder.append(line);
             }
-
             bufferedReader.close();
         } catch (Exception e) {
             e.printStackTrace();

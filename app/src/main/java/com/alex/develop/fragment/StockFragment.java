@@ -296,7 +296,6 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-
                 if (null != stockListAdapter) {
                     stockListAdapter.notifyDataSetChanged();
                 }

@@ -39,9 +39,14 @@
     <string name="trade_suspended">停牌</string>
 
     <!-- stock_fragment.xml-->
-    <string name="stock_code">名称代码</string>
-    <string name="stock_price">最新价</string>
-    <string name="stock_increase">涨跌幅</string>
+    <string name="stock_code">名称</string>
+    <string name="stock_price">现价</string>
+    <string name="stock_increase">波动</string>
+    <string name="main_one">1日</string>
+    <string name="main_twenty">20日</string>
+
+    <string name="main_run">主买</string>
+    <string name="main_big_order">超大</string>
 
     <!-- splash.xml-->
     <string name="start_tips_install">首次安装，下载数据 %1$d</string>

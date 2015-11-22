@@ -3,7 +3,6 @@ package com.alex.develop.entity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.alex.develop.stockanalyzer.Analyzer;
 import com.alex.develop.stockanalyzer.R;
@@ -304,10 +303,14 @@ public class Candlestick extends BaseObject {
     private long volume;// 成交量
     private float amount;// 成交额
     private float exchange;// 换手率
+
     private String date;// 日期
     private RectF kArea;// K线的实体部分
     private RectF vArea;// VOL的实体部分
     private float[] ma;// 平均值
+
+
+
 
     private Enum.API from;// 数据来源与哪个API
 }
