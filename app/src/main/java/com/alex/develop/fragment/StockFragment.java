@@ -228,7 +228,6 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

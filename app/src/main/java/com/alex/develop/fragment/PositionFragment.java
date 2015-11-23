@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.alex.develop.adapter.RealTimePricevoAdapter;
 import com.alex.develop.stockanalyzer.R;
 
 import org.easystogu.config.FileConfigurationService;
@@ -32,7 +31,7 @@ public class PositionFragment extends BaseFragment {
 //                listView.setAdapter(new RealTimePricevoAdapter(PositionFragment.this.getActivity(),printRealTimeOutput()));
 //            }
 //        }).start();
-        listView.setAdapter(new RealTimePricevoAdapter(PositionFragment.this.getActivity(), printRealTimeOutput()));
+        //listView.setAdapter(new RealTimePricevoAdapter(PositionFragment.this.getActivity(), printRealTimeOutput()));
         return view;
     }
     public List<RealTimePriceVO> printRealTimeOutput() {

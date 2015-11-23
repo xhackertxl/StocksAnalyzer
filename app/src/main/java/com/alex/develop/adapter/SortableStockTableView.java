@@ -42,15 +42,14 @@ public class SortableStockTableView extends SortableTableView<Stock> {
         setDataRowColoriser(TableDataRowColorizers.alternatingRows(rowColorEven, rowColorOdd));
         setHeaderSortStateViewProvider(SortStateViewProviders.brightArrows());
 
-        setColumnWeight(0, 1);
-        setColumnWeight(1, 1);
-        setColumnWeight(2, 1);
+        setColumnWeight(0, 20);
+        setColumnWeight(1, 10);
+        setColumnWeight(2, 10);
 
-        setColumnWeight(3, 1);
-        setColumnWeight(4, 1);
-        setColumnWeight(5, 1);
-        setColumnWeight(6, 1);
-
+        setColumnWeight(3, 10);
+        setColumnWeight(4, 10);
+        setColumnWeight(5, 10);
+        setColumnWeight(6, 10);
 
         setColumnComparator(0, new StockNameComparator());
         setColumnComparator(1, new StockCloseComparator());
