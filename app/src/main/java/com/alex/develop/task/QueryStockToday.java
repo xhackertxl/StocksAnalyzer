@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.alex.develop.easymoney.helper.TheMainCost;
 import com.alex.develop.entity.ApiStore;
 import com.alex.develop.entity.Stock;
 import com.alex.develop.stockanalyzer.Analyzer;
@@ -44,12 +43,10 @@ public class QueryStockToday extends AsyncTask<Stock, Void, Void> {
             temp[1] = temp[1].substring(1, temp[1].length()-1);
             String id = temp[0];
             String[] info = temp[1].split(ApiStore.SBL_CMA);
-
             if (id.equals(stock.getCode())) {
                 stock.fromSina(info);
-                TheMainCost.fetchDataFromWeb(stock.getCode(),stock);
+                //TheMainCost.fetchDataFromWeb(stock.getCode(),stock);
             }
-
             ++i;
         }
         return null;

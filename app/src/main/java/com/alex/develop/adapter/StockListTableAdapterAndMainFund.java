@@ -11,7 +11,6 @@ import com.alex.develop.entity.Stock;
 import com.alex.develop.stockanalyzer.Analyzer;
 import com.alex.develop.stockanalyzer.R;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +19,13 @@ import de.codecrafters.tableview.TableDataAdapter;
 /**
  * Created by alex on 15-8-19. 呈现所有股票列表信息ListView的Adapter
  */
-public class StockListTableAdapter extends TableDataAdapter<Stock> {
+public class StockListTableAdapterAndMainFund extends TableDataAdapter<Stock> {
 
     private List<Stock> mSelectedStocks;
     private SparseBooleanArray mSelectedItems;// 记录被选中的ItemId
     private final int selectedColor = Analyzer.getContext().getResources().getColor(R.color.list_item_selected_bg);// 被选中的背景颜色
 
-    public StockListTableAdapter(Context context, List<Stock> data) {
+    public StockListTableAdapterAndMainFund(Context context, List<Stock> data) {
         super(context, data);
 
         mSelectedStocks = new ArrayList<>();
@@ -43,11 +42,10 @@ public class StockListTableAdapter extends TableDataAdapter<Stock> {
         String close = stock.getToday().getCloseString();
         String changeString = stock.getToday().getChangeString();
 
-
         float main_cost_one = stock.getMain_cost_one();// 主力最近一日成本
-        float main_cost_twenty = stock.getMain_cost_twenty();// 主力最近20日成本
-        double main_fund_main = stock.getMain_cost_one_change();     // 主力流入
-        double main_fund_big_order = stock.getMain_cost_twenty_change();// 主力大单
+        float main_cost_twenty= stock.getMain_cost_twenty();// 主力最近20日成本
+        double main_fund_main= stock.getMain_cost_one_change();     // 主力流入
+        double main_fund_big_order= stock.getMain_cost_twenty_change();// 主力大单
 
 
         if (0 > increase) {
@@ -97,40 +95,20 @@ public class StockListTableAdapter extends TableDataAdapter<Stock> {
             case 5:
                 // 股票涨幅
                 renderedView = new TextView(this.getContext());
-                DecimalFormat df=new DecimalFormat("######0.00");
-                String tmp;
-                try {
-                    double st1 = Double.valueOf(main_cost_one);
-                    double st2 = Double.valueOf(close);
-                    tmp = df.format(st1 - st2);
-                    stock.setMain_cost_one_change(Double.valueOf(tmp));
-                } catch (Exception e) {
-                    tmp = "--";
-                    e.printStackTrace();
-                }
-                ((TextView) renderedView).setText(tmp);
+                ((TextView) renderedView).setText(Double.toString(main_fund_main));
                 ((TextView) renderedView).setTextColor(textColor);
                 break;
             case 6:
                 // 股票涨幅
                 renderedView = new TextView(this.getContext());
-                df = new DecimalFormat("######0.00");
-                try {
-                    double st1 = Double.valueOf(main_cost_twenty);
-                    double st2 = Double.valueOf(close);
-                    tmp = df.format(st1 - st2);
-                    stock.setMain_cost_twenty_change(Double.valueOf(tmp));
-                } catch (Exception e) {
-                    tmp = "--";
-                    e.printStackTrace();
-                }
-                ((TextView) renderedView).setText(tmp);
+                ((TextView) renderedView).setText(Double.toString(main_fund_big_order));
                 ((TextView) renderedView).setTextColor(textColor);
                 break;
         }
 
         int color = mSelectedItems.get(rowIndex) ? selectedColor : Color.TRANSPARENT;
         convertView.setBackgroundColor(color);
+
         return renderedView;
     }
 

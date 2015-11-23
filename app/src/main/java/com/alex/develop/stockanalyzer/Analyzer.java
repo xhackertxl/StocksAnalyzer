@@ -17,6 +17,10 @@ import java.util.Map;
  * 存储全局数据
  */
 public class Analyzer extends Application {
+    //广播常量
+
+    //数据更新
+    public static String  STOCK_UPDATE= "com.alex.develop.fragment.communication.RECEIVER_STOCK_UPDATE";
 
     @Override
     public void onCreate() {

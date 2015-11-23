@@ -2,8 +2,10 @@ package com.alex.develop.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,7 +49,7 @@ import de.codecrafters.tableview.listeners.TableDataClickListener;
 @SuppressLint("NewApi")
 public class StockFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener {
     private final static String TAG = "StockFragment";
-    public final static int MSG_SAY_HELLO=0;
+    public final static int MSG_SAY_HELLO = 0;
 
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
@@ -202,7 +204,7 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
 
         Intent intent = new Intent(this.getActivity(), OptionalService.class);
         // 绑定Service
-        getActivity().getApplicationContext().bindService(intent, opSC,Context.BIND_AUTO_CREATE);
+        getActivity().getApplicationContext().bindService(intent, opSC, Context.BIND_AUTO_CREATE);
 
         getActivity().startService(intent);
 
@@ -217,9 +219,17 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
 //            e.printStackTrace();
 //        }
 
+
+        //动态注册广播接收器
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Analyzer.STOCK_UPDATE);
+        getActivity().registerReceiver(msgReceiver, intentFilter);
         return view;
     }
+    private  MsgReceiver  msgReceiver;
 
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -278,6 +288,7 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
                 stock = stocks.get(i);
             }
             long stamp = System.currentTimeMillis();
+
             if (ApiStore.SINA_REFRESH_INTERVAL < stamp - stock.getStamp()) {//5秒内不重复查询
                 if (!stock.getTime().startsWith("15")) {// 15:00:00以后不重复查询
                     temp.add(stock);
@@ -320,7 +331,6 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
     }
 
 
-
     /**
      * 在Service处理Activity传过来消息的Handler
      */
@@ -338,6 +348,24 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
     }
 
 
+    /**
+     * 广播接收器
+     *
+     * @author len
+     */
+    public class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //拿到进度，更新UI
+            int msg = intent.getIntExtra(Analyzer.STOCK_UPDATE, 0);
+            switch (msg)
+            {
+               case 1 :
+                   //stockListAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
 
 
     private int queryStart;

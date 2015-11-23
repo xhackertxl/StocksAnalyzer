@@ -40,8 +40,8 @@ public final class Stock extends BaseObject {
             public static final String MAIN_COST_ONE = "main_cost_one";// 主力最近一日成本
             public static final String MAIN_COST_TWENTY = "main_cost_twenty";// 主力最近一日成本
 
-            public static final String MAIN_FUND_MAIN = "main_fund_main";           // 主力流入
-            public static final String MAIN_FUND_BIG_ORDER = "main_fund_big_order";// 主力大单
+            public static final String MAIN_FUND_MAIN = "main_cost_one_change";           // 主力流入
+            public static final String MAIN_FUND_BIG_ORDER = "main_cost_twenty_change";// 主力大单
         }
 
         public static final String NAME = "stock_list";
@@ -63,11 +63,11 @@ public final class Stock extends BaseObject {
 
                         Column.COLLECT + " INTEGER DEFAULT (0)," +
                         Column.COLLECT_STAMP + " INTEGER DEFAULT (0)," +
-                        Column.SEARCH + " INTEGER DEFAULT (0)"
+                        Column.SEARCH + " INTEGER DEFAULT (0) ,"
 
-                        + Column.MAIN_COST_ONE + " NUMERIC (24, 4) DEFAULT (0)  "
-                        + Column.MAIN_COST_TWENTY + " NUMERIC (24, 4) DEFAULT (0)  "
-                        + Column.MAIN_FUND_MAIN + " NUMERIC (24, 4) DEFAULT (0)  "
+                        + Column.MAIN_COST_ONE + " NUMERIC (24, 4) DEFAULT (0) , "
+                        + Column.MAIN_COST_TWENTY + " NUMERIC (24, 4) DEFAULT (0)  ,"
+                        + Column.MAIN_FUND_MAIN + " NUMERIC (24, 4) DEFAULT (0) , "
                         + Column.MAIN_FUND_BIG_ORDER + " NUMERIC (24, 4) DEFAULT (0)  "
 
                         +
@@ -427,9 +427,8 @@ public final class Stock extends BaseObject {
 
     private float main_cost_one;// 主力最近一日成本
     private float main_cost_twenty;// 主力最近一日成本
-    private float main_fund_main;     // 主力流入
-    private float main_fund_big_order;// 主力大单
-
+    private double main_cost_one_change;     // 主力流入
+    private double main_cost_twenty_change;// 主力大单
 
     public float getMain_cost_one() {
         return main_cost_one;
@@ -447,20 +446,20 @@ public final class Stock extends BaseObject {
         this.main_cost_twenty = main_cost_twenty;
     }
 
-    public float getMain_fund_main() {
-        return main_fund_main;
+    public double getMain_cost_one_change() {
+        return main_cost_one_change;
     }
 
-    public void setMain_fund_main(float main_fund_main) {
-        this.main_fund_main = main_fund_main;
+    public void setMain_cost_one_change(double main_cost_one_change) {
+        this.main_cost_one_change = main_cost_one_change;
     }
 
-    public float getMain_fund_big_order() {
-        return main_fund_big_order;
+    public double getMain_cost_twenty_change() {
+        return main_cost_twenty_change;
     }
 
-    public void setMain_fund_big_order(float main_fund_big_order) {
-        this.main_fund_big_order = main_fund_big_order;
+    public void setMain_cost_twenty_change(double main_cost_twenty_change) {
+        this.main_cost_twenty_change = main_cost_twenty_change;
     }
 
 

@@ -15,27 +15,27 @@ import de.codecrafters.tableview.toolkit.SortStateViewProviders;
 import de.codecrafters.tableview.toolkit.TableDataRowColorizers;
 
 
-public class SortableStockTableView extends SortableTableView<Stock> {
+public class SortableStockTableViewAndFund extends SortableTableView<Stock> {
 
-    public SortableStockTableView(Context context) {
+    public SortableStockTableViewAndFund(Context context) {
         this(context, null);
     }
 
-    public SortableStockTableView(Context context, AttributeSet attributes) {
+    public SortableStockTableViewAndFund(Context context, AttributeSet attributes) {
         this(context, attributes, 0);
     }
 
-    public SortableStockTableView(Context context, AttributeSet attributes, int styleAttributes) {
+    public SortableStockTableViewAndFund(Context context, AttributeSet attributes, int styleAttributes) {
         super(context, attributes, styleAttributes);
 
         SimpleTableHeaderAdapter simpleTableHeaderAdapter = new SimpleTableHeaderAdapter(context,
-                Analyzer.getContext().getResources().getString(R.string.stock_code),
-                Analyzer.getContext().getResources().getString(R.string.stock_price),
-                Analyzer.getContext().getResources().getString(R.string.stock_increase)
-                , Analyzer.getContext().getResources().getString(R.string.main_one)
-                , Analyzer.getContext().getResources().getString(R.string.main_twenty)
-                , Analyzer.getContext().getResources().getString(R.string.main_run)
-                , Analyzer.getContext().getResources().getString(R.string.main_big_order)
+                Analyzer.getContext().getResources().getString( R.string.stock_code),
+                Analyzer.getContext().getResources().getString( R.string.stock_price),
+                Analyzer.getContext().getResources().getString( R.string.stock_increase)
+                ,Analyzer.getContext().getResources().getString( R.string.main_one)
+                ,Analyzer.getContext().getResources().getString( R.string.main_twenty)
+                ,Analyzer.getContext().getResources().getString( R.string.main_run)
+                ,Analyzer.getContext().getResources().getString( R.string.main_big_order)
         );
         simpleTableHeaderAdapter.setTextColor(context.getResources().getColor(R.color.table_header_text));
         setHeaderAdapter(simpleTableHeaderAdapter);
@@ -59,11 +59,11 @@ public class SortableStockTableView extends SortableTableView<Stock> {
         setColumnComparator(2, new StockChangeComparator());
         setColumnComparator(3, new StockMain_cost_oneComparator());
         setColumnComparator(4, new StockgetMain_cost_twentyComparator());
-        setColumnComparator(5, new StockMain_cost_one_changeComparator());
-        setColumnComparator(6, new StockMain_cost_twenty_changeComparator());
+        setColumnComparator(5, new StockMain_fund_mainComparator());
+        setColumnComparator(6, new StockMain_fund_big_orderComparator());
 
 //        addDataClickListener(new StockClickListener());
-    }
+    } 
 
 //    private class StockClickListener implements TableDataClickListener<Stock> {
 //        @Override
@@ -85,9 +85,9 @@ public class SortableStockTableView extends SortableTableView<Stock> {
 
         @Override
         public int compare(Stock Stock1, Stock Stock2) {
-
-            if (Stock1.getToday().getClose() < Stock2.getToday().getClose()) return -1;
-            if (Stock1.getToday().getClose() > Stock2.getToday().getClose()) return 1;
+     
+            if ( Stock1.getToday().getClose() < Stock2.getToday().getClose() ) return -1;
+            if (Stock1.getToday().getClose()  > Stock2.getToday().getClose() ) return 1;
             return 0;
         }
     }
@@ -95,8 +95,8 @@ public class SortableStockTableView extends SortableTableView<Stock> {
     private static class StockChangeComparator implements Comparator<Stock> {
         @Override
         public int compare(Stock Stock1, Stock Stock2) {
-            if (Stock1.getToday().getChange() < Stock2.getToday().getChange()) return -1;
-            if (Stock1.getToday().getChange() > Stock2.getToday().getChange()) return 1;
+            if ( Stock1.getToday().getChange() < Stock2.getToday().getChange() ) return -1;
+            if (Stock1.getToday().getChange()  > Stock2.getToday().getChange() ) return 1;
             return 0;
         }
     }
@@ -104,8 +104,8 @@ public class SortableStockTableView extends SortableTableView<Stock> {
     private static class StockMain_cost_oneComparator implements Comparator<Stock> {
         @Override
         public int compare(Stock Stock1, Stock Stock2) {
-            if (Stock1.getMain_cost_one() < Stock2.getMain_cost_one()) return -1;
-            if (Stock1.getMain_cost_one() > Stock2.getMain_cost_one()) return 1;
+            if ( Stock1.getMain_cost_one() < Stock2.getMain_cost_one() ) return -1;
+            if (Stock1.getMain_cost_one()  > Stock2.getMain_cost_one() ) return 1;
             return 0;
         }
     }
@@ -113,27 +113,29 @@ public class SortableStockTableView extends SortableTableView<Stock> {
     private static class StockgetMain_cost_twentyComparator implements Comparator<Stock> {
         @Override
         public int compare(Stock Stock1, Stock Stock2) {
-            if (Stock1.getMain_cost_twenty() < Stock2.getMain_cost_twenty()) return -1;
-            if (Stock1.getMain_cost_twenty() > Stock2.getMain_cost_twenty()) return 1;
+            if ( Stock1.getMain_cost_twenty() < Stock2.getMain_cost_twenty() ) return -1;
+            if (Stock1.getMain_cost_twenty()  > Stock2.getMain_cost_twenty()) return 1;
             return 0;
         }
     }
 
-    private static class StockMain_cost_one_changeComparator implements Comparator<Stock> {
+    private static class StockMain_fund_mainComparator implements Comparator<Stock> {
         @Override
         public int compare(Stock Stock1, Stock Stock2) {
-            Double _st1 = Stock1.getMain_cost_one_change();
-            Double _st2 = Stock2.getMain_cost_one_change();
-            return _st1.compareTo(_st2);
+            if ( Stock1.getMain_cost_one_change() < Stock2.getMain_cost_one_change() ) return -1;
+            if (Stock1.getMain_cost_one_change()  > Stock2.getMain_cost_one_change()) return 1;
+            return 0;
         }
     }
 
-    private static class StockMain_cost_twenty_changeComparator implements Comparator<Stock> {
+    private static class StockMain_fund_big_orderComparator implements Comparator<Stock> {
         @Override
         public int compare(Stock Stock1, Stock Stock2) {
-            Double _st1 = Stock1.getMain_cost_twenty_change();
-            Double _st2 = Stock2.getMain_cost_twenty_change();
-            return _st1.compareTo(_st2);
+            if ( Stock1.getMain_cost_twenty_change() < Stock2.getMain_cost_twenty_change() ) return -1;
+            if (Stock1.getMain_cost_twenty_change()  > Stock2.getMain_cost_twenty_change() ) return 1;
+            return 0;
         }
     }
+
+
 }

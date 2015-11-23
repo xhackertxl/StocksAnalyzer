@@ -2,18 +2,11 @@
 <items version="2" >
 
     <item
-        jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.1\jars\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="f8efd0096475e0daf054267b61544e10dc776503">
-        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\classes-b3e5dff661b8c7c2ee4bbaf6f1b3f4bb3e3affb1.jar" />
-    </item>
-    <item
-        jar="F:\NEWSTOCK\StocksAnalyzer\app\libs\htmlunit-2.9.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="b38b877dd9a10ae410ab2372eff7ff6c265962c7">
-        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\htmlunit-2.9-5c5712b6434c680c9c774008af43159091345789.jar" />
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\classes-c02db83b6248d360e4f27917503b4bfe9f30f6e2.jar" />
     </item>
     <item
         jar="F:\NEWSTOCK\StocksAnalyzer\app\libs\jsoup-1.8.1.jar"
@@ -23,17 +16,10 @@
         <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\jsoup-1.8.1-d2fe2688d285827c2248cb6e35537a86d346eaa7.jar" />
     </item>
     <item
-        jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.1\jars\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
-        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\classes-c02db83b6248d360e4f27917503b4bfe9f30f6e2.jar" />
-    </item>
-    <item
         jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\StocksAnalyzer\tableview\unspecified\jars\classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="ee73f7d1c4db6daf371c6e075c36237c7c362844">
+        sha1="cd0ef1a2b43d4243a1e1b5290b2ef352914bd550">
         <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\classes-d58e46b80d20a2e723e7d1e9b9835be62424d53c.jar" />
     </item>
     <item
@@ -44,6 +30,13 @@
         <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-045c308d9eeb7a3ebe448156c695cee1efc2cb79.jar" />
     </item>
     <item
+        jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-e3a7b6800efdd60ee12155b569dc64ca4ff5f4f8.jar" />
+    </item>
+    <item
         jar="F:\NEWSTOCK\StocksAnalyzer\app\libs\YoumiSdk_v4.10_2014-11-24.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -51,11 +44,18 @@
         <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\YoumiSdk_v4.10_2014-11-24-7082fc10d0a95b1cfc9f4b0b4651640c64f916e9.jar" />
     </item>
     <item
-        jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
+        jar="F:\NEWSTOCK\StocksAnalyzer\app\libs\htmlunit-2.9.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
-        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-e3a7b6800efdd60ee12155b569dc64ca4ff5f4f8.jar" />
+        sha1="b38b877dd9a10ae410ab2372eff7ff6c265962c7">
+        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\htmlunit-2.9-5c5712b6434c680c9c774008af43159091345789.jar" />
+    </item>
+    <item
+        jar="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="F:\NEWSTOCK\StocksAnalyzer\app\build\intermediates\pre-dexed\debug\classes-b3e5dff661b8c7c2ee4bbaf6f1b3f4bb3e3affb1.jar" />
     </item>
 
 </items>

@@ -19,7 +19,16 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alex.develop.easymoney.helper.TheMainCost;
+import com.alex.develop.entity.Stock;
+import com.alex.develop.stockanalyzer.Analyzer;
+import com.alex.develop.util.NetworkHelper;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class OptionalService extends Service {
     /**
@@ -45,8 +54,6 @@ public class OptionalService extends Service {
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
-
-
     }
 
     @Override
@@ -72,17 +79,114 @@ public class OptionalService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
-        Context mContext = getApplicationContext();
-        {
-            vibrator = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
-            // 等待3秒，震动3秒，从第0个索引开始，一直循环
-            //0一直循环  -1 不循环
-            vibrator.vibrate(new long[]{100,100}, -1);
+
+        final List<Stock> stockList = Analyzer.getStockList();
+        if (null != stockList) {
+            new Thread(new TheMainCostRunnable(stockList, 0, stockList.size())).start();
+            new Thread(new LoadDataRunnable(stockList.toArray(new Stock[stockList.size()]))).start();
         }
+
+//        int count = 500;
+//        int start = 0;
+//        int end = 0;
+//        for (int i = 0;null != stockList && i * count <= stockList.size(); i++) {
+//            if (i == 0) {
+//                start = 0;
+//                end = count;
+//            } else {
+//                start = count * i + 1;
+//                end = count * (i+1);
+//                if(end>stockList.size())
+//                {
+//                    end=stockList.size();
+//                }
+//            }
+//            new Thread(new TheMainCostRunnable(stockList, start, end)).start();
+//        }
 
         return super.onStartCommand(intent, flags, startId);
     }
 
+    class TheMainCostRunnable implements Runnable {
+        List<Stock> stockList;
+        int start;
+        int end;
+
+        public TheMainCostRunnable(List<Stock> stockList, int start, int end) {
+            this.stockList = stockList;
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public void run() {
+            int i = start;
+            for (i = start; i < end; i++) {
+                Stock stock = stockList.get(i);
+                int x = stock.getToday().getChangeString().indexOf("停");
+
+//                if(stock.getToday().getChangeString().indexOf("停") >= 0 ) {
+//                    stockList.remove(stock);
+//                    break;
+//                }
+
+                System.out.println(stock.getToday().getChangeString());
+                if (stock.getMain_cost_one() <= 0) {
+                    TheMainCost.fetchDataFromWeb(stock.getCode(), stock);
+                    try {
+                        //发送Action为com.example.communication.RECEIVER的广播
+                        Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
+                        sendBroadcast(intent);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (i == end - 1) {
+                    i = 0;
+                    Context mContext = getApplicationContext();
+                    {
+                        // 等待3秒，震动3秒，从第0个索引开始，一直循环
+                        //0一直循环  -1 不循环
+                        vibrator = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
+                        vibrator.vibrate(new long[]{100, 100,100 ,1000}, -1);
+                    }
+                }
+            }
+        }
+    }
+
+    class LoadDataRunnable implements Runnable {
+        Stock[] stockList;
+
+        public LoadDataRunnable(Stock[] stockList) {
+            this.stockList = stockList;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    //通过SimpleDateFormat获取24小时制时间
+                    //SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.getDefault());
+                    //通过SimpleDateFormat获取24小时制时间
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH.mm", Locale.getDefault());
+                    String time = sdf.format(new Date()).toString();
+                    NetworkHelper.LoadData(stockList);
+                    Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
+                    sendBroadcast(intent);
+                    Thread.sleep(3000);
+
+                    if(Double.parseDouble(time) > 13.30)
+                    {
+                        return;
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * 在Service处理Activity传过来消息的Handler
@@ -160,7 +264,7 @@ public class OptionalService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         //Toast.makeText(getApplicationContext(), "binding", Toast.LENGTH_SHORT).show();
-       // mMessenger.getBinder();
+        // mMessenger.getBinder();
         return new LocalBinder();
     }
 

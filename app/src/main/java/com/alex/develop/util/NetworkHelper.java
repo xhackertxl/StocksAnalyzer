@@ -1,5 +1,8 @@
 package com.alex.develop.util;
 
+import com.alex.develop.entity.ApiStore;
+import com.alex.develop.entity.Stock;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,6 +54,32 @@ public class NetworkHelper {
         }
         return builder.toString();
     }
+
+
+    public static void LoadData(Stock... params) {
+
+        String sinaApiUrl = ApiStore.getSinaTodayUrl(params);
+        String data = NetworkHelper.getWebContent(sinaApiUrl, ApiStore.SINA_CHARSET);
+        String[] lines = data.split(ApiStore.SBL_SEM);
+
+        int i = 0;
+        for (String line : lines) {
+
+            Stock stock = params[i];
+
+            String[] temp = line.substring(11).split(ApiStore.SBL_EQL);
+            temp[0] = temp[0].substring(2);
+            temp[1] = temp[1].substring(1, temp[1].length()-1);
+            String id = temp[0];
+            String[] info = temp[1].split(ApiStore.SBL_CMA);
+            if (id.equals(stock.getCode())) {
+                stock.fromSina(info);
+                //TheMainCost.fetchDataFromWeb(stock.getCode(),stock);
+            }
+            ++i;
+        }
+    }
+
 
     private NetworkHelper(){}
 }
