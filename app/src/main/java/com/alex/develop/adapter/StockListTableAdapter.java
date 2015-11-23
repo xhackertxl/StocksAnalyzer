@@ -44,7 +44,7 @@ public class StockListTableAdapter extends TableDataAdapter<Stock> {
 
 
         float main_cost_one = stock.getMain_cost_one();// 主力最近一日成本
-        float main_cost_twenty= stock.getMain_cost_twenty();// 主力最近一日成本
+        float main_cost_twenty= stock.getMain_cost_twenty();// 主力最近20日成本
         float main_fund_main= stock.getMain_fund_main();     // 主力流入
         float main_fund_big_order= stock.getMain_fund_big_order();// 主力大单
 
@@ -85,6 +85,24 @@ public class StockListTableAdapter extends TableDataAdapter<Stock> {
                 // 股票涨幅
                 renderedView = new TextView(this.getContext());
                 ((TextView) renderedView).setText(Float.toString(main_cost_one));
+                ((TextView) renderedView).setTextColor(textColor);
+                break;
+            case 4:
+                // 股票涨幅
+                renderedView = new TextView(this.getContext());
+                ((TextView) renderedView).setText(Float.toString(main_cost_twenty));
+                ((TextView) renderedView).setTextColor(textColor);
+                break;
+            case 5:
+                // 股票涨幅
+                renderedView = new TextView(this.getContext());
+                ((TextView) renderedView).setText(Float.toString(main_fund_main));
+                ((TextView) renderedView).setTextColor(textColor);
+                break;
+            case 6:
+                // 股票涨幅
+                renderedView = new TextView(this.getContext());
+                ((TextView) renderedView).setText(Float.toString(main_fund_big_order));
                 ((TextView) renderedView).setTextColor(textColor);
                 break;
         }

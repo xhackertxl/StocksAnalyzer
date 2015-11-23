@@ -44,16 +44,15 @@
             android:text="@string/stock_increase"
             android:textSize="@dimen/stock_float" />
     </RadioGroup>
-    
+
     <com.alex.develop.adapter.SortableStockTableView
         android:id="@+id/stockList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:fastScrollEnabled="true"
+        android:drawSelectorOnTop="false"
+        android:fastScrollEnabled="false"
         custom:columnCount="7"
         custom:headerElevation="10"
         custom:headerColor="@color/abc_input_method_navigation_guard"
         />
-
 </LinearLayout>

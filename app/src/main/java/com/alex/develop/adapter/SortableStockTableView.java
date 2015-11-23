@@ -42,18 +42,22 @@ public class SortableStockTableView extends SortableTableView<Stock> {
         setDataRowColoriser(TableDataRowColorizers.alternatingRows(rowColorEven, rowColorOdd));
         setHeaderSortStateViewProvider(SortStateViewProviders.brightArrows());
 
-        setColumnWeight(0, 20);
-        setColumnWeight(1, 10);
-        setColumnWeight(2, 10);
+        setColumnWeight(0, 2);
+        setColumnWeight(1, 1);
+        setColumnWeight(2, 1);
 
-        setColumnWeight(3, 10);
-        setColumnWeight(4, 10);
-        setColumnWeight(5, 10);
-        setColumnWeight(6, 10);
+        setColumnWeight(3, 1);
+        setColumnWeight(4, 1);
+        setColumnWeight(5, 1);
+        setColumnWeight(6, 1);
 
         setColumnComparator(0, new StockNameComparator());
         setColumnComparator(1, new StockCloseComparator());
         setColumnComparator(2, new StockChangeComparator());
+        setColumnComparator(3, new StockMain_cost_oneComparator());
+        setColumnComparator(4, new StockgetMain_cost_twentyComparator());
+        setColumnComparator(5, new StockMain_fund_mainComparator());
+        setColumnComparator(6, new StockMain_fund_big_orderComparator());
 
 //        addDataClickListener(new StockClickListener());
     } 
@@ -93,9 +97,42 @@ public class SortableStockTableView extends SortableTableView<Stock> {
             return 0;
         }
     }
-    
-    
 
- 
+    private static class StockMain_cost_oneComparator implements Comparator<Stock> {
+        @Override
+        public int compare(Stock Stock1, Stock Stock2) {
+            if ( Stock1.getMain_cost_one() < Stock2.getMain_cost_one() ) return -1;
+            if (Stock1.getMain_cost_one()  > Stock2.getMain_cost_one() ) return 1;
+            return 0;
+        }
+    }
+
+    private static class StockgetMain_cost_twentyComparator implements Comparator<Stock> {
+        @Override
+        public int compare(Stock Stock1, Stock Stock2) {
+            if ( Stock1.getMain_cost_twenty() < Stock2.getMain_cost_twenty() ) return -1;
+            if (Stock1.getMain_cost_twenty()  > Stock2.getMain_cost_twenty()) return 1;
+            return 0;
+        }
+    }
+
+    private static class StockMain_fund_mainComparator implements Comparator<Stock> {
+        @Override
+        public int compare(Stock Stock1, Stock Stock2) {
+            if ( Stock1.getMain_fund_main() < Stock2.getMain_fund_main() ) return -1;
+            if (Stock1.getMain_fund_main()  > Stock2.getMain_fund_main()) return 1;
+            return 0;
+        }
+    }
+
+    private static class StockMain_fund_big_orderComparator implements Comparator<Stock> {
+        @Override
+        public int compare(Stock Stock1, Stock Stock2) {
+            if ( Stock1.getMain_fund_big_order() < Stock2.getMain_fund_big_order() ) return -1;
+            if (Stock1.getMain_fund_big_order()  > Stock2.getMain_fund_big_order() ) return 1;
+            return 0;
+        }
+    }
+
 
 }
