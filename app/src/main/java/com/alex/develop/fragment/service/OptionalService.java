@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class OptionalService extends Service {
     /**
@@ -81,7 +82,7 @@ public class OptionalService extends Service {
         // TODO Auto-generated method stub
 
         final List<Stock> stockList = Analyzer.getStockList();
-        ArrayList<Stock[]> arrayList =Analyzer.getArraystockList();
+        ArrayList<Stock[]> arrayList = Analyzer.getArraystockList();
 
         if (null != stockList) {
             new Thread(new TheMainCostRunnable(stockList, 0, stockList.size())).start();
@@ -94,26 +95,31 @@ public class OptionalService extends Service {
         List<Stock> stockList;
         int start;
         int end;
+
         public TheMainCostRunnable(List<Stock> stockList, int start, int end) {
             this.stockList = stockList;
             this.start = start;
             this.end = end;
         }
+
         @Override
         public void run() {
             try {
+                Random random = new Random();
                 int i = start;
                 for (i = start; i < end; i++) {
                     Stock stock = stockList.get(i);
                     int x = stock.getToday().getChangeString().indexOf("停");
                     System.out.println(stock.getToday().getChangeString());
                     if (stock.getMain_cost_one() <= 0) {
-                        TheMainCost.fetchDataFromWeb(stock.getCode(), stock);
                         try {
+                            TheMainCost.fetchDataFromWeb_deceive(Long.toString(random.nextLong()));
+                            Thread.sleep(100);
+                            TheMainCost.fetchDataFromWeb(stock.getCode(), stock);
+                            System.out.println("fetchDataFromWeb_deceive ------- " );
                             //发送Action为com.example.communication.RECEIVER的广播
                             Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
                             sendBroadcast(intent);
-                            Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -155,13 +161,11 @@ public class OptionalService extends Service {
                     Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
                     sendBroadcast(intent);
 
-                    for(Stock[] stocks : stockList)
-                    {
+                    for (Stock[] stocks : stockList) {
                         NetworkHelper.LoadData(stocks);
                         System.out.println("start ------- " + stocks.length);
                     }
-                    if (Double.parseDouble(time) > 15.30)
-                    {
+                    if (Double.parseDouble(time) > 15.30) {
                         return;
                     }
                     Thread.sleep(500);

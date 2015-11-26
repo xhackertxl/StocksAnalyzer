@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class TheMainCost {
     private final static String baseUrl = "http://data.eastmoney.com/stockcomment/";
-
+    private final static String deceive_baseUrl = "http://data.eastmoney.com/";
     public static void fetchDataFromWeb(String stockId, Stock stock) {
         StringBuffer urlStr = new StringBuffer(baseUrl + stockId + ".html");
         try {
@@ -46,6 +46,23 @@ public class TheMainCost {
 //            stock.setMain_cost_twenty_change(Float.parseFloat(bigRun.text()));
 //            System.out.println(bigRun.text());
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void fetchDataFromWeb_deceive(String s) {
+        Connection conn = null;
+        try {
+            conn = Jsoup.connect(deceive_baseUrl+s);
+            // 修改http包中的header,伪装成浏览器进行抓取
+            conn.header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/    20100101 Firefox/32.0");
+            try {
+                conn.get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

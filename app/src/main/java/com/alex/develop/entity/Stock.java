@@ -323,6 +323,10 @@ public final class Stock extends BaseObject {
     }
 
     public void fromSina(String[] data) {
+        if(null == data || data.length <= 1 )
+        {
+            return;
+        }
         today.setOpen(Float.valueOf(data[1]));// 开盘价
         today.setLastClose(Float.valueOf(data[2])); // 昨日收盘价
         today.setClose(Float.valueOf(data[3]));// 当前价格
