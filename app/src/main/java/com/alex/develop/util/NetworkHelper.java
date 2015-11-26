@@ -1,5 +1,7 @@
 package com.alex.develop.util;
 
+import android.util.Log;
+
 import com.alex.develop.entity.ApiStore;
 import com.alex.develop.entity.Stock;
 
@@ -16,12 +18,15 @@ import java.util.HashMap;
  */
 public class NetworkHelper {
 
+    private static final String TAG = "com.alex.develop.util.NetworkHelper";
+
     public static String getWebContent(String webUrl, String charset) {
         return getWebContent(webUrl, null, charset);
     }
 
     /**
      * 读取一张网页的内容
+     *
      * @param webUrl 网页对应的URL
      * @return 网页内容字符串
      */
@@ -31,8 +36,8 @@ public class NetworkHelper {
         try {
             URL url = new URL(webUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
-            if(null != header) {
-                for(String key : header.keySet()) {
+            if (null != header) {
+                for (String key : header.keySet()) {
                     urlConnection.setRequestProperty(key, header.get(key));
                 }
             }
@@ -41,14 +46,14 @@ public class NetworkHelper {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, charset));
 
             String line;
-            while (null != (line=bufferedReader.readLine())) {
+            while (null != (line = bufferedReader.readLine())) {
                 builder.append(line);
             }
             bufferedReader.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(null != urlConnection) {
+            if (null != urlConnection) {
                 urlConnection.disconnect();
             }
         }
@@ -58,28 +63,39 @@ public class NetworkHelper {
 
     public static void LoadData(Stock... params) {
 
-        String sinaApiUrl = ApiStore.getSinaTodayUrl(params);
-        String data = NetworkHelper.getWebContent(sinaApiUrl, ApiStore.SINA_CHARSET);
-        String[] lines = data.split(ApiStore.SBL_SEM);
+        try {
 
-        int i = 0;
-        for (String line : lines) {
+            String sinaApiUrl = ApiStore.getSinaTodayUrl(params);
+            String data = NetworkHelper.getWebContent(sinaApiUrl, ApiStore.SINA_CHARSET);
+            String[] lines = data.split(ApiStore.SBL_SEM);
 
-            Stock stock = params[i];
+            int i = 0;
+            for (String line : lines) {
+                Stock stock = params[i];
+                String[] temp = line.substring(11).split(ApiStore.SBL_EQL);
+                temp[0] = temp[0].substring(2);
+                temp[1] = temp[1].substring(1, temp[1].length() - 1);
+                String id = temp[0];
+                String[] info = temp[1].split(ApiStore.SBL_CMA);
 
-            String[] temp = line.substring(11).split(ApiStore.SBL_EQL);
-            temp[0] = temp[0].substring(2);
-            temp[1] = temp[1].substring(1, temp[1].length()-1);
-            String id = temp[0];
-            String[] info = temp[1].split(ApiStore.SBL_CMA);
-            if (id.equals(stock.getCode())) {
-                stock.fromSina(info);
-                //TheMainCost.fetchDataFromWeb(stock.getCode(),stock);
+                if(info.length <= 1)
+                {
+                    continue;
+                }
+                if (id.equals(stock.getCode())) {
+                    stock.fromSina(info);
+                    //TheMainCost.fetchDataFromWeb(stock.getCode(),stock);
+                }
+                ++i;
             }
-            ++i;
+        }  catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG,e.getMessage());
         }
+
     }
 
 
-    private NetworkHelper(){}
+    private NetworkHelper() {
+    }
 }

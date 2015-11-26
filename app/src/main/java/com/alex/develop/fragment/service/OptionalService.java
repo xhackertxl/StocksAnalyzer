@@ -26,6 +26,7 @@ import com.alex.develop.util.NetworkHelper;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +43,6 @@ public class OptionalService extends Service {
 
     private MediaPlayer mMediaPlayer = null;
     private Vibrator vibrator;
-    //private Target target; // 关注对象的信息
 
     // 状态栏提示要用的
     private NotificationManager m_Manager;
@@ -81,29 +81,12 @@ public class OptionalService extends Service {
         // TODO Auto-generated method stub
 
         final List<Stock> stockList = Analyzer.getStockList();
+        ArrayList<Stock[]> arrayList =Analyzer.getArraystockList();
+
         if (null != stockList) {
             new Thread(new TheMainCostRunnable(stockList, 0, stockList.size())).start();
-            new Thread(new LoadDataRunnable(stockList.toArray(new Stock[stockList.size()]))).start();
+            new Thread(new LoadDataRunnable(arrayList)).start();
         }
-
-//        int count = 500;
-//        int start = 0;
-//        int end = 0;
-//        for (int i = 0;null != stockList && i * count <= stockList.size(); i++) {
-//            if (i == 0) {
-//                start = 0;
-//                end = count;
-//            } else {
-//                start = count * i + 1;
-//                end = count * (i+1);
-//                if(end>stockList.size())
-//                {
-//                    end=stockList.size();
-//                }
-//            }
-//            new Thread(new TheMainCostRunnable(stockList, start, end)).start();
-//        }
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -111,79 +94,81 @@ public class OptionalService extends Service {
         List<Stock> stockList;
         int start;
         int end;
-
         public TheMainCostRunnable(List<Stock> stockList, int start, int end) {
             this.stockList = stockList;
             this.start = start;
             this.end = end;
         }
-
         @Override
         public void run() {
-            int i = start;
-            for (i = start; i < end; i++) {
-                Stock stock = stockList.get(i);
-                int x = stock.getToday().getChangeString().indexOf("停");
-
-//                if(stock.getToday().getChangeString().indexOf("停") >= 0 ) {
-//                    stockList.remove(stock);
-//                    break;
-//                }
-
-                System.out.println(stock.getToday().getChangeString());
-                if (stock.getMain_cost_one() <= 0) {
-                    TheMainCost.fetchDataFromWeb(stock.getCode(), stock);
-                    try {
-                        //发送Action为com.example.communication.RECEIVER的广播
-                        Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
-                        sendBroadcast(intent);
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            try {
+                int i = start;
+                for (i = start; i < end; i++) {
+                    Stock stock = stockList.get(i);
+                    int x = stock.getToday().getChangeString().indexOf("停");
+                    System.out.println(stock.getToday().getChangeString());
+                    if (stock.getMain_cost_one() <= 0) {
+                        TheMainCost.fetchDataFromWeb(stock.getCode(), stock);
+                        try {
+                            //发送Action为com.example.communication.RECEIVER的广播
+                            Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
+                            sendBroadcast(intent);
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (i == end - 1) {
+                        i = 0;
+                        Context mContext = getApplicationContext();
+                        {
+                            // 等待3秒，震动3秒，从第0个索引开始，一直循环
+                            //0一直循环  -1 不循环
+                            vibrator = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
+                            vibrator.vibrate(new long[]{100, 100, 100, 1000}, -1);
+                        }
                     }
                 }
-                if (i == end - 1) {
-                    i = 0;
-                    Context mContext = getApplicationContext();
-                    {
-                        // 等待3秒，震动3秒，从第0个索引开始，一直循环
-                        //0一直循环  -1 不循环
-                        vibrator = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
-                        vibrator.vibrate(new long[]{100, 100,100 ,1000}, -1);
-                    }
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
     class LoadDataRunnable implements Runnable {
-        Stock[] stockList;
+        ArrayList<Stock[]> stockList;
 
-        public LoadDataRunnable(Stock[] stockList) {
+        public LoadDataRunnable(ArrayList<Stock[]> stockList) {
             this.stockList = stockList;
         }
 
         @Override
         public void run() {
-            try {
-                while (true) {
+            int i = 0;
+            while (true) {
+                try {
                     //通过SimpleDateFormat获取24小时制时间
                     //SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.getDefault());
                     //通过SimpleDateFormat获取24小时制时间
                     SimpleDateFormat sdf = new SimpleDateFormat("HH.mm", Locale.getDefault());
                     String time = sdf.format(new Date()).toString();
-                    NetworkHelper.LoadData(stockList);
                     Intent intent = new Intent(Analyzer.STOCK_UPDATE).putExtra(Analyzer.STOCK_UPDATE, 1);
                     sendBroadcast(intent);
-                    Thread.sleep(3000);
 
-                    if(Double.parseDouble(time) > 13.30)
+                    for(Stock[] stocks : stockList)
+                    {
+                        NetworkHelper.LoadData(stocks);
+                        System.out.println("start ------- " + stocks.length);
+                    }
+                    if (Double.parseDouble(time) > 15.30)
                     {
                         return;
                     }
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
             }
         }
     }

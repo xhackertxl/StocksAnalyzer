@@ -202,29 +202,17 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
         });
 
 
-        Intent intent = new Intent(this.getActivity(), OptionalService.class);
-        // 绑定Service
-        getActivity().getApplicationContext().bindService(intent, opSC, Context.BIND_AUTO_CREATE);
+        if (null != bundle) {
+            isCollectView = bundle.getBoolean(ARG_IS_COLLECT_VIEW);
+            if (isCollectView) {
 
-        getActivity().startService(intent);
-
-//        IBinder ibinder = opSC.getIbinder();
-//        opSC.setmService(new Messenger(ibinder));
-//
-        // 向Service发送一个Message
-//        Message msg = Message.obtain(null, OptionalService.MSG_SAY_HELLO, 0, 0);
-//        try {
-//            opSC.getmService().send(msg);
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
-
-
-        //动态注册广播接收器
-        msgReceiver = new MsgReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Analyzer.STOCK_UPDATE);
-        getActivity().registerReceiver(msgReceiver, intentFilter);
+            } else {
+                bindService();
+            }
+        } else {
+            bindService();
+        }
+        bindService();
         return view;
     }
     private  MsgReceiver  msgReceiver;
@@ -241,11 +229,22 @@ public class StockFragment extends BaseFragment implements CompoundButton.OnChec
         }
     }
 
+    private void bindService()
+    {
+        Intent intent = new Intent(this.getActivity(), OptionalService.class);
+        // 绑定Service
+        getActivity().getApplicationContext().bindService(intent, opSC, Context.BIND_AUTO_CREATE);
+
+        //动态注册广播接收器
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Analyzer.STOCK_UPDATE);
+        getActivity().registerReceiver(msgReceiver, intentFilter);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
-
         if (Activity.RESULT_OK == resultCode) {
             if (REQUEST_SEARCH_STOCK == requestCode && isCollectView) {
                 updateCollectStockList();

@@ -41,7 +41,7 @@ import java.util.Map;
  * 2、加载程序所需数据<br>
  * 3、介绍软件新特性
  * 4、广告展示
- * 
+ *
  * @author Created by alex 2014/11/07
  */
 @SuppressLint("NewApi")
@@ -54,8 +54,8 @@ public class Splash extends BaseActivity {
 
 		initialize();
 		blockBack(false);
-		
-		if(isNetworkAvailable()) {
+
+		if (isNetworkAvailable()) {
 			startApp();
 		}
 	}
@@ -64,12 +64,12 @@ public class Splash extends BaseActivity {
 	 * 从网络读取数据
 	 */
 	private void startApp() {
-		
+
 		String preferFiles = getPackageName();
 		SharedPreferences prefer = getSharedPreferences(preferFiles, Context.MODE_PRIVATE);
-		
+
 		final boolean firstLaunch = prefer.getBoolean(getString(R.string.key_first_launch), true);
-		if(firstLaunch) {
+		if (firstLaunch) {
 			SharedPreferences.Editor editor = prefer.edit();
 			editor.putBoolean(getString(R.string.key_first_launch), false);
 			editor.apply();
@@ -88,17 +88,23 @@ public class Splash extends BaseActivity {
 				Remote.init(Remote.GIT_MANIFEST);
 
 				// 从SQLite中读取数据
-				if(!firstLaunch) {
+				if (!firstLaunch) {
 
 					int count = 0;
 					List<Stock> stocks = new ArrayList<>();
-					Map stocksMap = new HashMap<String,Stock>();
+
+					/*-----------------------------*/
+					ArrayList<Stock[]> arrayList = new ArrayList<>();
+					Map stocksMap = new HashMap<String, Stock>();
 					Analyzer.setStockListMap(stocksMap);
+					ArrayList<Stock> temp = new ArrayList<>();
+					Analyzer.setArraystockList(arrayList);
+                    /*-----------------------------*/
 
 					SQLiteDatabase db = SQLiteHelper.getInstance().getReadableDatabase();
 					Cursor cursor = db.query(Stock.Table.NAME, null, null, null, null, null, null);
 
-					if(null != cursor && cursor.moveToFirst()) {
+					if (null != cursor && cursor.moveToFirst()) {
 						do {
 							String stockCode = cursor.getString(cursor.getColumnIndex(Stock.Table.Column.CODE));
 							String stockCodeCN = cursor.getString(cursor.getColumnIndex(Stock.Table.Column.CODE_CN));
@@ -112,21 +118,34 @@ public class Splash extends BaseActivity {
 							Stock stock = new Stock(stockCode, stockName);
 							stock.setCodeCN(stockCodeCN);
 							stock.setListDate(listDate);
-
 							stock.setCollect(collect);
 							stock.setCollectStamp(collectStamp);
 							stock.setSearch(search);
 							stock.setIndex(count);
 							stocks.add(stock);
-							stocksMap.put(stock.getCode(),stock);
+
+							/*-----------------------*/
+							stocksMap.put(stock.getCode(), stock);
+							temp.add(stock);
+							if (temp.size() >= 227) {
+								arrayList.add(temp.toArray(new Stock[temp.size()]));
+								System.out.println("size ----- " + temp.size());
+								temp = new ArrayList<>();
+							}
+							/*-----------------------*/
 							++count;
 						} while (cursor.moveToNext());
 					}
-
-					if(null != cursor) {
+					if (null != cursor) {
 						cursor.close();
 					}
-
+                    /*-----------------------*/
+					if (temp.size() > 0) {
+						arrayList.add(temp.toArray(new Stock[temp.size()]));
+						System.out.println("size ----- " + temp.size() + " -- " + count);
+						temp = null;
+					}
+                    /*-----------------------*/
 					Analyzer.setStockList(stocks);
 				}
 				return null;
@@ -136,7 +155,7 @@ public class Splash extends BaseActivity {
 			protected void onPostExecute(Void aVoid) {
 				super.onPostExecute(aVoid);
 
-				if(firstLaunch) {
+				if (firstLaunch) {
 
 					new AddStockAsync(getString(R.string.start_tips_install)).execute(Remote.GIT_STOCK_LIST);
 
@@ -160,10 +179,10 @@ public class Splash extends BaseActivity {
 			private long start;
 		}.execute();
 	}
-	
+
 	private void startActivity(boolean isFirst) {
 		if (isFirst) {
-			
+
 			/**
 			 *  启动新特性介绍
 			 */
@@ -179,18 +198,19 @@ public class Splash extends BaseActivity {
 				}
 
 				@Override
-				public void onAnimationRepeat(Animation animation) {}
+				public void onAnimationRepeat(Animation animation) {
+				}
 
 				@Override
 				public void onAnimationEnd(Animation animation) {
 					splash.setVisibility(View.GONE);
 				}
 			});
-			
+
 			splash.startAnimation(splashAnim);
-			
+
 		} else {
-			
+
 			// 程序主界面
 			intent = new Intent(Splash.this, MainActivity.class);
 			startActivity(intent);
@@ -206,7 +226,7 @@ public class Splash extends BaseActivity {
 				inflater.inflate(R.layout.feature_2, null),
 				inflater.inflate(R.layout.feature_3, null)
 		};
-		
+
 		FeatureAdapter featureAdapter = new FeatureAdapter(views);
 
 		feature = (ViewPager) findViewById(R.id.feature);
@@ -220,6 +240,7 @@ public class Splash extends BaseActivity {
 	private View[] views;// 存储ViewPager中的页面
 	private ViewPager feature;// 新特性介绍
 	private TextView startTips;
+
 	private class FeatureAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
 
 		public FeatureAdapter(View[] views) {
@@ -242,13 +263,13 @@ public class Splash extends BaseActivity {
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
 
 			// 到达ViewPager的最后一页，才可执行后面的操作
-			if(views.length != (arg0+1)) {
-				return ;
+			if (views.length != (arg0 + 1)) {
+				return;
 			}
 
 			// 在ViewPager的最后一页，向左滑动，进入主界面
-			if(0.0f == arg1 && 0 == arg2 && isScolling) {
-				if(!lastPageWasScolledLeft) {
+			if (0.0f == arg1 && 0 == arg2 && isScolling) {
+				if (!lastPageWasScolledLeft) {
 
 					// 进入程序主界面
 					startActivity(false);
@@ -266,8 +287,8 @@ public class Splash extends BaseActivity {
 			indicator.setImageResource(R.drawable.circle_dot_activited);
 
 			// 设置其余的指示器为正常状态
-			for(int i=0; i<views.length; ++i) {
-				if(i!=arg0) {
+			for (int i = 0; i < views.length; ++i) {
+				if (i != arg0) {
 					indicator = (ImageView) views[arg0].findViewById(getIndicator(i));
 					indicator.setImageResource(R.drawable.circle_dot_normal);
 				}
@@ -341,6 +362,16 @@ public class Splash extends BaseActivity {
 				String line;
 				List<Stock> stocks = new ArrayList<>();
 				SQLiteDatabase db = SQLiteHelper.getInstance().getWritableDatabase();
+
+                /*-----------------------------*/
+				ArrayList<Stock[]> arrayList = new ArrayList<>();
+				Map stocksMap = new HashMap<String, Stock>();
+				Analyzer.setStockListMap(stocksMap);
+				ArrayList<Stock> temp = new ArrayList<>();
+				Analyzer.setArraystockList(arrayList);
+				/*-----------------------------*/
+
+
 				while (null != (line = bufferedReader.readLine())) {
 					String[] data = line.split(",");
 
@@ -359,10 +390,27 @@ public class Splash extends BaseActivity {
 					stock.setIndex(count);
 					stocks.add(stock);
 					++count;
+					publishProgress(count * 100 / total);
 
-					publishProgress(count*100/total);
+                   /*-----------------------*/
+					stocksMap.put(stock.getCode(), stock);
+					temp.add(stock);
+					if (temp.size() >= 227) {
+						arrayList.add(temp.toArray(new Stock[temp.size()]));
+						System.out.println("size ----- " + temp.size());
+						temp = new ArrayList<>();
+					}
+					/*-----------------------*/
 				}
 				Analyzer.setStockList(stocks);
+
+                /*-----------------------*/
+				if (temp.size() > 0) {
+					arrayList.add(temp.toArray(new Stock[temp.size()]));
+					System.out.println("size ----- " + temp.size() + " -- " + count);
+					temp = null;
+				}
+                /*-----------------------*/
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
